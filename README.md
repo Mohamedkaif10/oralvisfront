@@ -1,10 +1,10 @@
-# 🦷 Oralvis Frontend
+# Oralvis Frontend
 
 This is the frontend repository for the **Oralvis Assignment**.
 
 ---
 
-## 📁 Clone the Repository
+##  Clone the Repository
 
 ```bash
 git clone https://github.com/Mohamedkaif10/oralvisfront.git
