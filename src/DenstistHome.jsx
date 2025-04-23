@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { io } from 'socket.io-client'; 
 const DentistHome = ({ onLogout }) => {
   const [requests, setRequests] = useState([]);
   const [error, setError] = useState('');
@@ -9,7 +9,53 @@ const DentistHome = ({ onLogout }) => {
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
 
+const userId ="68092be139ad12ce8e57fbaf"
+  
+  const socket = io('http://localhost:8000');
 
+
+  console.log('the userId is', userId);
+
+
+  useEffect(() => {
+    if (userId) {
+      socket.emit('join', userId);
+      console.log('Joined room:', userId);
+    }
+
+    
+    socket.on('checkup_request', async (requestData) => {
+      console.log('Received checkup request:', requestData);
+      
+      try {
+        const response = await fetch(`http://localhost:8000/api/auth/user/${requestData.userId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        const userData = await response.json();
+        if (response.ok) {
+          setRequests((prev) => [...prev, {
+            _id: requestData._id,
+            userId: { email: userData.email },
+            status: requestData.status,
+            createdAt: requestData.createdAt,
+            hasPhoto: false
+          }]);
+        }
+      } catch (err) {
+        console.error('Error fetching user email:', err);
+      }
+    });
+
+
+    return () => {
+      socket.off('checkup_request');
+      socket.disconnect();
+    };
+  }, [userId]);
+
+  
   useEffect(() => {
     const fetchRequests = async () => {
       try {
@@ -30,7 +76,6 @@ const DentistHome = ({ onLogout }) => {
     };
     fetchRequests();
   }, []);
-
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];

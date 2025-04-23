@@ -1,13 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { jsPDF } from 'jspdf';
-
+import { io } from 'socket.io-client';
 const UserHome = ({ onLogout }) => {
   const [dentists, setDentists] = useState([]);
   const [selectedDentist, setSelectedDentist] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [checkupResults, setCheckupResults] = useState([]);
+//   const userId = localStorage.getItem('userId');
+const userId ="68092bae39ad12ce8e57fbad"
+  const socket = io('http://localhost:8000');
+  console.log('the userId is', userId);
 
+  useEffect(() => {
+    if (userId) {
+      socket.emit('join', userId);
+      console.log('Joined room:', userId);
+    }
+
+    socket.on('photo_uploaded', (photoData) => {
+      console.log('Received photo upload:', photoData);
+      setCheckupResults((prev) => [...prev, {
+        _id: photoData._id,
+        photo: photoData.photo,
+        description: photoData.description,
+        createdAt: photoData.createdAt,
+        dentistId: { email: 'Loading...' } 
+      }]);
+    
+      fetchCheckupResults();
+    });
+
+  
+    return () => {
+      socket.off('photo_uploaded');
+      socket.disconnect();
+    };
+  }, [userId]);
 
   useEffect(() => {
     const fetchDentists = async () => {
@@ -25,10 +54,10 @@ const UserHome = ({ onLogout }) => {
     };
     fetchDentists();
   }, []);
-// console.log("the token is ",localStorage.getItem('token'))
-// console.log("the userId is ",localStorage.getItem('userId'))
+console.log("the token is ",localStorage.getItem('token'))
 
-  useEffect(() => {
+
+
     const fetchCheckupResults = async () => {
       try {
        
@@ -49,9 +78,11 @@ const UserHome = ({ onLogout }) => {
         setError('Network error');
       }
     };
-    fetchCheckupResults();
-  }, []);
 
+
+  useEffect(() => {
+    fetchCheckupResults();
+  }, [userId]);
  
   const handleSubmit = async (e) => {
     e.preventDefault();
