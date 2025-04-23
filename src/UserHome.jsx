@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { jsPDF } from 'jspdf';
+import  jsPDF  from 'jspdf';
 import { io } from 'socket.io-client';
 const UserHome = ({ onLogout }) => {
   const [dentists, setDentists] = useState([]);
