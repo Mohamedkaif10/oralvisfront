@@ -9,7 +9,7 @@ const DentistHome = ({ onLogout }) => {
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
 
-const userId ="68092be139ad12ce8e57fbaf"
+const userId =localStorage.getItem('userId');
   
   const socket = io('http://localhost:8000');
 

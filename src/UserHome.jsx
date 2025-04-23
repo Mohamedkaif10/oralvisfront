@@ -7,8 +7,7 @@ const UserHome = ({ onLogout }) => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [checkupResults, setCheckupResults] = useState([]);
-//   const userId = localStorage.getItem('userId');
-const userId ="68092bae39ad12ce8e57fbad"
+  const userId = localStorage.getItem('userId');
   const socket = io('http://localhost:8000');
   console.log('the userId is', userId);
 
@@ -57,12 +56,10 @@ const userId ="68092bae39ad12ce8e57fbad"
 console.log("the token is ",localStorage.getItem('token'))
 
 
-
     const fetchCheckupResults = async () => {
       try {
        
-        // const response = await fetch(`http://localhost:8000/api/checkup/photos/${localStorage.getItem('userId')}`, {
-            const response = await fetch(`http://localhost:8000/api/checkup/photos/68092bae39ad12ce8e57fbad`, 
+         const response = await fetch(`http://localhost:8000/api/checkup/photos/${localStorage.getItem('userId')}`, 
             {
           headers: {
             'Authorization': `${localStorage.getItem('token')}`
