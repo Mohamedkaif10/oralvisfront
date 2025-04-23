@@ -1,38 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import  jsPDF  from 'jspdf';
-import { io } from 'socket.io-client';
+import React, { useState, useEffect } from "react";
+import jsPDF from "jspdf";
+import { io } from "socket.io-client";
 const UserHome = ({ onLogout }) => {
   const [dentists, setDentists] = useState([]);
-  const [selectedDentist, setSelectedDentist] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [selectedDentist, setSelectedDentist] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [checkupResults, setCheckupResults] = useState([]);
-  const userId = localStorage.getItem('userId');
-  const socket = io('http://localhost:8000');
-  console.log('the userId is', userId);
+  const userId = localStorage.getItem("userId");
+  const socket = io("http://localhost:8000");
+  console.log("the userId is", userId);
 
   useEffect(() => {
     if (userId) {
-      socket.emit('join', userId);
-      console.log('Joined room:', userId);
+      socket.emit("join", userId);
+      console.log("Joined room:", userId);
     }
 
-    socket.on('photo_uploaded', (photoData) => {
-      console.log('Received photo upload:', photoData);
-      setCheckupResults((prev) => [...prev, {
-        _id: photoData._id,
-        photo: photoData.photo,
-        description: photoData.description,
-        createdAt: photoData.createdAt,
-        dentistId: { email: 'Loading...' } 
-      }]);
-    
+    socket.on("photo_uploaded", (photoData) => {
+      console.log("Received photo upload:", photoData);
+      setCheckupResults((prev) => [
+        ...prev,
+        {
+          _id: photoData._id,
+          photo: photoData.photo,
+          description: photoData.description,
+          createdAt: photoData.createdAt,
+          dentistId: { email: "Loading..." },
+        },
+      ]);
+
       fetchCheckupResults();
     });
 
-  
     return () => {
-      socket.off('photo_uploaded');
+      socket.off("photo_uploaded");
       socket.disconnect();
     };
   }, [userId]);
@@ -40,82 +42,87 @@ const UserHome = ({ onLogout }) => {
   useEffect(() => {
     const fetchDentists = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/checkup/dentists');
+        const response = await fetch(
+          "http://localhost:8000/api/checkup/dentists"
+        );
         const data = await response.json();
         if (response.ok) {
           setDentists(data);
         } else {
-          setError(data.message || 'Failed to fetch dentists');
+          setError(data.message || "Failed to fetch dentists");
         }
       } catch (err) {
-        setError('Network error');
+        setError("Network error");
       }
     };
     fetchDentists();
   }, []);
-console.log("the token is ",localStorage.getItem('token'))
+  console.log("the token is ", localStorage.getItem("token"));
 
-
-    const fetchCheckupResults = async () => {
-      try {
-       
-         const response = await fetch(`http://localhost:8000/api/checkup/photos/${localStorage.getItem('userId')}`, 
-            {
+  const fetchCheckupResults = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/checkup/photos/${localStorage.getItem(
+          "userId"
+        )}`,
+        {
           headers: {
-            'Authorization': `${localStorage.getItem('token')}`
-          }
-           });
-        const data = await response.json();
-        if (response.ok) {
-          setCheckupResults(data);
-        } else {
-          setError(data.message || 'Failed to fetch checkup results');
+            Authorization: `${localStorage.getItem("token")}`,
+          },
         }
-      } catch (err) {
-        setError('Network error');
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setCheckupResults(data);
+      } else {
+        setError(data.message || "Failed to fetch checkup results");
       }
-    };
-
+    } catch (err) {
+      setError("Network error");
+    }
+  };
 
   useEffect(() => {
     fetchCheckupResults();
   }, [userId]);
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedDentist) {
-      setError('Please select a dentist');
+      setError("Please select a dentist");
       return;
     }
     try {
-      const response = await fetch('http://localhost:8000/api/checkup/request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ dentistId: selectedDentist })
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/checkup/request",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ dentistId: selectedDentist }),
+        }
+      );
       const data = await response.json();
       if (response.ok) {
-        setMessage('Checkup request submitted successfully');
-        setError('');
-        setSelectedDentist('');
+        setMessage("Checkup request submitted successfully");
+        setError("");
+        setSelectedDentist("");
       } else {
-        setError(data.message || 'Failed to submit request');
+        setError(data.message || "Failed to submit request");
       }
     } catch (err) {
-      setError('Network error');
+      setError("Network error");
     }
   };
 
- 
   const exportToPDF = () => {
     const doc = new jsPDF();
     let yOffset = 10;
 
     doc.setFontSize(16);
-    doc.text('Checkup Results', 10, yOffset);
+    doc.text("Checkup Results", 10, yOffset);
     yOffset += 10;
 
     checkupResults.forEach((result, index) => {
@@ -131,10 +138,14 @@ console.log("the token is ",localStorage.getItem('token'))
       doc.text(`Dentist: ${result.dentistId.email}`, 10, yOffset);
       yOffset += 10;
 
-      doc.text(`Date: ${new Date(result.createdAt).toLocaleDateString()}`, 10, yOffset);
+      doc.text(
+        `Date: ${new Date(result.createdAt).toLocaleDateString()}`,
+        10,
+        yOffset
+      );
       yOffset += 10;
 
-      doc.text('Description:', 10, yOffset);
+      doc.text("Description:", 10, yOffset);
       yOffset += 10;
       const descriptionLines = doc.splitTextToSize(result.description, 180);
       doc.text(descriptionLines, 10, yOffset);
@@ -142,17 +153,17 @@ console.log("the token is ",localStorage.getItem('token'))
 
       if (result.photo) {
         try {
-          doc.addImage(result.photo, 'JPEG', 10, yOffset, 50, 50);
+          doc.addImage(result.photo, "JPEG", 10, yOffset, 50, 50);
           yOffset += 60;
         } catch (err) {
-          console.error('Error adding image to PDF:', err);
+          console.error("Error adding image to PDF:", err);
         }
       }
 
       yOffset += 10;
     });
 
-    doc.save('checkup_results.pdf');
+    doc.save("checkup_results.pdf");
   };
 
   return (
@@ -207,8 +218,11 @@ console.log("the token is ",localStorage.getItem('token'))
                 Export to PDF
               </button>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {checkupResults.map((result) => (
-                  <div key={result._id} className="bg-white p-4 rounded-lg shadow-md">
+                {checkupResults.map((result) => (
+                  <div
+                    key={result._id}
+                    className="bg-white p-4 rounded-lg shadow-md"
+                  >
                     <img
                       src={result.photo}
                       alt="Checkup"
@@ -218,7 +232,8 @@ console.log("the token is ",localStorage.getItem('token'))
                       <strong>Dentist:</strong> {result.dentistId.email}
                     </p>
                     <p className="text-gray-700 mb-2">
-                      <strong>Date:</strong> {new Date(result.createdAt).toLocaleDateString()}
+                      <strong>Date:</strong>{" "}
+                      {new Date(result.createdAt).toLocaleDateString()}
                     </p>
                     <p className="text-gray-700">
                       <strong>Description:</strong> {result.description}
