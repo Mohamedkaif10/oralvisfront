@@ -41,10 +41,10 @@ const Login = ({ onLogin }) => {
         onLogin(data.token, data.role);
       } else {
         setIsRegister(false);
-        setError("✅ Registration successful! Please log in.");
+        setError("Registration successful! Please log in.");
       }
     } catch (err) {
-      setError(`❌ ${err.message}`);
+      setError(` ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -76,7 +76,7 @@ const Login = ({ onLogin }) => {
         {error && (
           <div
             className={`p-3 rounded mb-4 text-sm ${
-              error.includes("✅")
+              error.includes("done")
                 ? "bg-green-100 text-green-700"
                 : "bg-red-100 text-red-700"
             }`}
