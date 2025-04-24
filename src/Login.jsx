@@ -1,4 +1,12 @@
 import React, { useState } from "react";
+import { BeatLoader, RingLoader } from "react-spinners";
+import { css } from "@emotion/react";
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: white;
+`;
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -6,12 +14,12 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState("");
   const [isRegister, setIsRegister] = useState(false);
   const [role, setRole] = useState("user");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true); 
+    setLoading(true);
 
     const url = isRegister
       ? "https://oralvisbackend.onrender.com/api/auth/register"
@@ -44,13 +52,35 @@ const Login = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex items-center justify-center">
-      <div className="bg-white w-1/2 p-8 rounded-2xl shadow-xl">
-        <h2 className="text-2xl font-bold text-center mb-6">
-          {isRegister ? "Register" : "Login"}
-        </h2>
+      <div className="bg-white w-full md:w-1/2 lg:w-1/3 p-8 rounded-2xl shadow-xl">
+        <div className="text-center mb-6">
+          {loading ? (
+            <div className="flex justify-center mb-4">
+              <RingLoader
+                color={"#7e22ce"}
+                loading={loading}
+                css={override}
+                size={60}
+              />
+            </div>
+          ) : (
+            <h2 className="text-2xl font-bold">
+              {isRegister ? "Create Account" : "Welcome Back"}
+            </h2>
+          )}
+          <p className="text-gray-600 mt-2">
+            {isRegister ? "Join our community today" : "Sign in to continue"}
+          </p>
+        </div>
 
         {error && (
-          <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
+          <div
+            className={`p-3 rounded mb-4 text-sm ${
+              error.includes("✅")
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
             {error}
           </div>
         )}
@@ -63,7 +93,8 @@ const Login = ({ onLogin }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-5 py-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              disabled={loading}
             />
           </div>
 
@@ -74,7 +105,8 @@ const Login = ({ onLogin }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-5 py-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              disabled={loading}
             />
           </div>
 
@@ -84,7 +116,8 @@ const Login = ({ onLogin }) => {
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                disabled={loading}
               >
                 <option value="user">User</option>
                 <option value="dentist">Dentist</option>
@@ -94,34 +127,23 @@ const Login = ({ onLogin }) => {
 
           <button
             type="submit"
-            disabled={loading} 
-            className={`w-full flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg transition ${
-              loading ? "opacity-70 cursor-not-allowed" : ""
+            disabled={loading}
+            className={`w-full flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg transition ${
+              loading ? "opacity-90 cursor-not-allowed" : ""
             }`}
           >
-            {loading && (
-              <svg
-                className="animate-spin h-5 w-5 mr-3 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8H4z"
-                ></path>
-              </svg>
+            {loading ? (
+              <BeatLoader
+                color={"#ffffff"}
+                loading={loading}
+                css={override}
+                size={10}
+              />
+            ) : isRegister ? (
+              "Create Account"
+            ) : (
+              "Sign In"
             )}
-            {isRegister ? "Register" : "Login"}
           </button>
         </form>
 
@@ -134,8 +156,9 @@ const Login = ({ onLogin }) => {
                 setError("");
               }}
               className="ml-2 text-purple-600 hover:underline font-medium"
+              disabled={loading}
             >
-              {isRegister ? "Login" : "Register"}
+              {isRegister ? "Sign In" : "Create Account"}
             </button>
           </p>
         </div>
