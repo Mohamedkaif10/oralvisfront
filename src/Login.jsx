@@ -85,8 +85,11 @@ const Login = ({ onLogin }) => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5 flex flex-col items-center"
+        >
+          <div className="w-1/2">
             <label className="block mb-1 text-gray-700">Email</label>
             <input
               type="email"
@@ -98,7 +101,7 @@ const Login = ({ onLogin }) => {
             />
           </div>
 
-          <div>
+          <div className="w-1/2">
             <label className="block mb-1 text-gray-700">Password</label>
             <input
               type="password"
@@ -111,7 +114,7 @@ const Login = ({ onLogin }) => {
           </div>
 
           {isRegister && (
-            <div>
+            <div className="w-1/2">
               <label className="block mb-1 text-gray-700">Role</label>
               <select
                 value={role}
@@ -128,7 +131,7 @@ const Login = ({ onLogin }) => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg transition ${
+            className={`w-1/2 flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg transition ${
               loading ? "opacity-90 cursor-not-allowed" : ""
             }`}
           >

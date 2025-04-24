@@ -12,7 +12,7 @@ const DentistHome = ({ onLogout }) => {
   const userId = localStorage.getItem("userId");
 
   // const socket = io("http://localhost:8000");
-  const socket = io("https://oralvisbackend.onrender.com")
+  const socket = io("https://oralvisbackend.onrender.com");
   console.log("the userId is", userId);
 
   useEffect(() => {
@@ -187,7 +187,7 @@ const DentistHome = ({ onLogout }) => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       User Email
                     </th>
-                   
+
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Request Date
                     </th>
