@@ -11,8 +11,8 @@ const DentistHome = ({ onLogout }) => {
 
   const userId = localStorage.getItem("userId");
 
-  const socket = io("http://localhost:8000");
-
+  // const socket = io("http://localhost:8000");
+  const socket = io("https://oralvisbackend.onrender.com")
   console.log("the userId is", userId);
 
   useEffect(() => {
@@ -26,7 +26,8 @@ const DentistHome = ({ onLogout }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8000/api/auth/user/${requestData.userId}`,
+          // `http://localhost:8000/api/auth/user/${requestData.userId}`,
+          `https://oralvisbackend.onrender.com/api/auth/user/${requestData.userId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -61,7 +62,8 @@ const DentistHome = ({ onLogout }) => {
     const fetchRequests = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/checkup/requests",
+          // "http://localhost:8000/api/checkup/requests",
+          "https://oralvisbackend.onrender.com/api/checkup/requests",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -112,7 +114,8 @@ const DentistHome = ({ onLogout }) => {
       reader.onloadend = async () => {
         const base64Photo = reader.result;
         const response = await fetch(
-          "http://localhost:8000/api/checkup/photo",
+          // "http://localhost:8000/api/checkup/photo",
+          "https://oralvisbackend.onrender.com/api/checkup/photo",
           {
             method: "POST",
             headers: {
@@ -136,7 +139,8 @@ const DentistHome = ({ onLogout }) => {
           setSelectedRequestId(null);
 
           const updatedResponse = await fetch(
-            "http://localhost:8000/api/checkup/requests",
+            // "http://localhost:8000/api/checkup/requests",
+            "https://oralvisbackend.onrender.com/api/checkup/requests",
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -11,8 +11,10 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
     setError("");
     const url = isRegister
-      ? "http://localhost:8000/api/auth/register"
-      : "http://localhost:8000/api/auth/login";
+      // ? "http://localhost:8000/api/auth/register"
+      // : "http://localhost:8000/api/auth/login";
+      ? "https://oralvisbackend.onrender.com/api/auth/register"
+      : "https://oralvisbackend.onrender.com/api/auth/login";
     const body = isRegister ? { email, password, role } : { email, password };
 
     try {

@@ -8,7 +8,8 @@ const UserHome = ({ onLogout }) => {
   const [error, setError] = useState("");
   const [checkupResults, setCheckupResults] = useState([]);
   const userId = localStorage.getItem("userId");
-  const socket = io("http://localhost:8000");
+  // const socket = io("http://localhost:8000");
+  const socket = io("https://oralvisbackend.onrender.com")
   console.log("the userId is", userId);
 
   useEffect(() => {
@@ -43,7 +44,8 @@ const UserHome = ({ onLogout }) => {
     const fetchDentists = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/checkup/dentists"
+          // "http://localhost:8000/api/checkup/dentists"
+          "https://oralvisbackend.onrender.com/api/checkup/dentists",
         );
         const data = await response.json();
         if (response.ok) {
@@ -62,7 +64,8 @@ const UserHome = ({ onLogout }) => {
   const fetchCheckupResults = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/checkup/photos/${localStorage.getItem(
+        // `http://localhost:8000/api/checkup/photos/${localStorage.getItem(
+          `https://oralvisbackend.onrender.com/api/checkup/photos/${localStorage.getItem(
           "userId"
         )}`,
         {
@@ -94,7 +97,8 @@ const UserHome = ({ onLogout }) => {
     }
     try {
       const response = await fetch(
-        "http://localhost:8000/api/checkup/request",
+        // "http://localhost:8000/api/checkup/request",
+        "https://oralvisbackend.onrender.com/api/checkup/request",
         {
           method: "POST",
           headers: {
