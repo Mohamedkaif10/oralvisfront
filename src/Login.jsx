@@ -6,15 +6,17 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState("");
   const [isRegister, setIsRegister] = useState(false);
   const [role, setRole] = useState("user");
+  const [loading, setLoading] = useState(false); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true); 
+
     const url = isRegister
-      // ? "http://localhost:8000/api/auth/register"
-      // : "http://localhost:8000/api/auth/login";
       ? "https://oralvisbackend.onrender.com/api/auth/register"
       : "https://oralvisbackend.onrender.com/api/auth/login";
+
     const body = isRegister ? { email, password, role } : { email, password };
 
     try {
@@ -35,6 +37,8 @@ const Login = ({ onLogin }) => {
       }
     } catch (err) {
       setError(`❌ ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,8 +94,33 @@ const Login = ({ onLogin }) => {
 
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg transition"
+            disabled={loading} 
+            className={`w-full flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded-lg transition ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           >
+            {loading && (
+              <svg
+                className="animate-spin h-5 w-5 mr-3 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+              </svg>
+            )}
             {isRegister ? "Register" : "Login"}
           </button>
         </form>
@@ -100,7 +129,10 @@ const Login = ({ onLogin }) => {
           <p className="text-sm text-gray-600">
             {isRegister ? "Already have an account?" : "Don't have an account?"}
             <button
-              onClick={() => setIsRegister(!isRegister)}
+              onClick={() => {
+                setIsRegister(!isRegister);
+                setError("");
+              }}
               className="ml-2 text-purple-600 hover:underline font-medium"
             >
               {isRegister ? "Login" : "Register"}
