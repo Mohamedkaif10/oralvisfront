@@ -248,11 +248,6 @@ const UserHome = ({ onLogout }) => {
             </div>
           )}
         </div>
-        <p>Other features:</p>
-        <ul className="list-disc ml-6">
-          <li>View your appointment history</li>
-          <li>Manage your profile</li>
-        </ul>
       </div>
     </div>
   );
