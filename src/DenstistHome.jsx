@@ -266,11 +266,6 @@ const DentistHome = ({ onLogout }) => {
             </div>
           )}
         </div>
-        <p>Other features:</p>
-        <ul className="list-disc ml-6">
-          <li>Manage patient records</li>
-          <li>Update availability</li>
-        </ul>
       </div>
     </div>
   );
